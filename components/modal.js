@@ -7,9 +7,12 @@ import {
   Modal,
   TextInput,
   ToastAndroid,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Dimensions
 } from "react-native";
 
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 export default class ModalView extends Component {
   state = {
     productId: null,
@@ -20,21 +23,27 @@ export default class ModalView extends Component {
 
   //Talks to the Main View And push the product object
   addToProductList = () => {
-    ToastAndroid.show("added", ToastAndroid.LONG);
-    let product = {
-      productId: toString(Math.floor(Math.random * 100 - Math.random * 11)),
-      productName: this.state.productName,
-      productQuantity: this.state.productQuantity,
-      productPrice: this.state.productPrice
-    };
-    this.props.addData(product);
-    // on press clearing textInput
-    this.setState({
-      productId: null,
-      productName: null,
-      productQuantity: null,
-      productPrice: null
-    });
+    if (
+      this.state.productName &&
+      this.state.productQuantity &&
+      this.state.productPrice
+    ) {
+      ToastAndroid.show("added", ToastAndroid.LONG);
+      let product = {
+        productId: toString(Math.floor(Math.random * 100 - Math.random * 11)),
+        productName: this.state.productName,
+        productQuantity: this.state.productQuantity,
+        productPrice: this.state.productPrice
+      };
+      this.props.addData(product);
+      // on press clearing textInput
+      this.setState({
+        productId: null,
+        productName: null,
+        productQuantity: null,
+        productPrice: null
+      });
+    }
   };
 
   render() {
@@ -52,48 +61,66 @@ export default class ModalView extends Component {
           <View //Giving the Transparent effect
             style={{
               flex: 1,
-              backgroundColor: "rgba(0,0,0,0.8)",
-              justifyContent: "center",
-              alignItems: "center"
+              backgroundColor: "rgba(0,0,0,0.7)",
+              alignItems: "center",
+              justifyContent: "center"
             }}
           >
             <TouchableWithoutFeedback /** Container, ToOverRide The TopLevel Touchable */
             >
               <View
                 style={{
-                  width: "90%",
-                  height: "50%",
+                  width: screenWidth - 28,
+                  height: screenHeight / 2,
                   backgroundColor: "white",
                   borderWidth: 1,
                   borderRadius: 10
                 }}
               >
-                <TouchableOpacity //The Close Button
-                  onPress={this.props.modalClose}
-                  style={styles.closeX}
-                >
-                  <Text style={{ color: "white" }}>X</Text>
-                </TouchableOpacity>
-
                 <View //The Main Modal View...............................
                   style={{
-                    flex: 1,
-                    margin: 8,
-                    justifyContent: "center",
-                    alignItems: "center"
+                    flex: 1
                   }}
                 >
-                  <Text style={{ color: "black", fontSize: 16 }}>
-                    Add Products
-                  </Text>
                   <View
                     style={{
+                      flex: 1,
+                      width: "100%",
+                      padding: 8,
+                      borderTopRightRadius: 10,
+                      borderTopLeftRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "rgb(238,238,238)"
+                    }}
+                  >
+                    <TouchableOpacity //The Close Button
+                      onPress={this.props.modalClose}
+                      style={styles.closeX}
+                    >
+                      <Text style={{ color: "white" }}>X</Text>
+                    </TouchableOpacity>
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: 18,
+                        alignSelf: "center"
+                      }}
+                    >
+                      Add Products
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 3,
                       padding: 10,
                       width: "100%"
                     }}
                   >
                     <View style={styles.V1}>
-                      <Text style={{ flex: 1, alignSelf: "center" }}>
+                      <Text
+                        style={{ flex: 1, alignSelf: "center", color: "black" }}
+                      >
                         Product Name
                       </Text>
                       <TextInput
@@ -105,7 +132,9 @@ export default class ModalView extends Component {
                       />
                     </View>
                     <View style={styles.V1}>
-                      <Text style={{ flex: 1, alignSelf: "center" }}>
+                      <Text
+                        style={{ flex: 1, alignSelf: "center", color: "black" }}
+                      >
                         Quantity
                       </Text>
                       <TextInput
@@ -118,7 +147,9 @@ export default class ModalView extends Component {
                       />
                     </View>
                     <View style={styles.V1}>
-                      <Text style={{ flex: 1, alignSelf: "center" }}>
+                      <Text
+                        style={{ flex: 1, alignSelf: "center", color: "black" }}
+                      >
                         Price
                       </Text>
                       <TextInput
@@ -173,13 +204,14 @@ const styles = StyleSheet.create({
     height: 40,
     width: "100%",
     marginTop: 10,
+    paddingLeft: 10,
     flexDirection: "row"
   },
   addBtn: {
     position: "absolute",
-    right: 8,
-    bottom: 8,
-    backgroundColor: "rgb(255,195,0)",
+    right: 18,
+    bottom: 18,
+    backgroundColor: "rgb(42,182,115)",
     width: 40,
     height: 40,
     borderRadius: 20,

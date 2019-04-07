@@ -43,7 +43,7 @@ export default class App extends Component {
           height: 40,
           width: "100%",
           marginTop: 8,
-          backgroundColor: "red",
+          backgroundColor: "rgb(42,182,115)",
           flexDirection: "row"
         }}
       >
