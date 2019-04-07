@@ -168,7 +168,7 @@ export default class ModalView extends Component {
                     }}
                     style={styles.addBtn}
                   >
-                    <Text style={{ color: "black" }}>Add</Text>
+                    <Text style={{ color: "white" }}>Add</Text>
                   </TouchableOpacity>
                 </View>
               </View>
