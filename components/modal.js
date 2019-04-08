@@ -28,14 +28,19 @@ export default class ModalView extends Component {
       this.state.productQuantity &&
       this.state.productPrice
     ) {
-      ToastAndroid.show("added", ToastAndroid.LONG);
+      let productId = Math.floor(Math.random * 100 + 200);
       let product = {
-        productId: toString(Math.floor(Math.random * 100 - Math.random * 11)),
+        productId,
         productName: this.state.productName,
         productQuantity: this.state.productQuantity,
         productPrice: this.state.productPrice
       };
       this.props.addData(product);
+      ToastAndroid.showWithGravity(
+        "Procuct Added",
+        ToastAndroid.LONG,
+        ToastAndroid.TOP
+      );
       // on press clearing textInput
       this.setState({
         productId: null,
@@ -94,7 +99,7 @@ export default class ModalView extends Component {
                       backgroundColor: "rgb(238,238,238)"
                     }}
                   >
-                    <TouchableOpacity //The Close Button
+                    <TouchableOpacity //...........................The Close Button
                       onPress={this.props.modalClose}
                       style={styles.closeX}
                     >
@@ -128,6 +133,8 @@ export default class ModalView extends Component {
                         onChangeText={productName => {
                           this.setState({ productName });
                         }}
+                        blurOnSubmit={false}
+                        onSubmitEditing={() => this.addToProductList()}
                         value={this.state.productName}
                       />
                     </View>
@@ -143,6 +150,8 @@ export default class ModalView extends Component {
                           this.setState({ productQuantity });
                         }}
                         keyboardType="numeric"
+                        blurOnSubmit={false}
+                        onSubmitEditing={() => this.addToProductList()}
                         value={this.state.productQuantity}
                       />
                     </View>
@@ -158,6 +167,8 @@ export default class ModalView extends Component {
                           this.setState({ productPrice });
                         }}
                         keyboardType="numeric"
+                        onSubmitEditing={() => this.addToProductList()}
+                        blurOnSubmit={false}
                         value={this.state.productPrice}
                       />
                     </View>
@@ -183,8 +194,8 @@ export default class ModalView extends Component {
 const styles = StyleSheet.create({
   closeX: {
     position: "absolute",
-    top: 1,
-    right: 1,
+    top: 4,
+    left: 4,
     width: 20,
     height: 20,
     justifyContent: "center",
@@ -196,7 +207,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     flex: 1.5,
     height: 40,
-    borderWidth: 1,
+    borderWidth: 0.4,
     borderColor: "black",
     borderRadius: 10
   },

@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import AnimatedField from "./components/animatedField";
 import ModalView from "./components/modal";
+import Icon from "react-native-vector-icons/Feather";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
@@ -23,14 +24,12 @@ export default class App extends Component {
     total_cost: null,
     products: [
       {
-        productId: "23",
+        productId: 1,
         productName: "biki",
         productQuantity: 1,
         productPrice: 2
       }
     ],
-    phonePlaceC: "grey",
-    namePlaceC: "grey",
     productBorderC: "grey",
     visible: false
   };
@@ -55,7 +54,7 @@ export default class App extends Component {
             alignSelf: "center"
           }}
         >
-          <Text>{item.productName}</Text>
+          <Text style={{ color: "#fff" }}>{item.productName}</Text>
         </View>
         <View
           style={{
@@ -65,7 +64,7 @@ export default class App extends Component {
             alignSelf: "center"
           }}
         >
-          <Text>{item.productQuantity}</Text>
+          <Text style={{ color: "#fff" }}>{item.productQuantity}</Text>
         </View>
         <View
           style={{
@@ -75,11 +74,12 @@ export default class App extends Component {
             alignSelf: "center"
           }}
         >
-          <Text>{item.productPrice}</Text>
+          <Text style={{ color: "#fff" }}>{item.productPrice}</Text>
         </View>
       </View>
     );
   };
+  //.....addData
   modalSendingProduct = product => {
     let productArr = [].concat(this.state.products);
     let index = productArr.length;
@@ -99,7 +99,8 @@ export default class App extends Component {
         this.state.customer_phone_num === null &&
         this.state.customer_name === null
       ) {
-        this.setState({ phonePlaceC: "red", namePlaceC: "red" });
+        //,,,,,,,,,,
+        ToastAndroid.show("Empty Fields", ToastAndroid.LONG);
       } else if (this.state.customer_phone_num === null) {
         this.setState({ phonePlaceC: "red" });
         ToastAndroid.show("Phone Number Required", ToastAndroid.LONG);
@@ -112,6 +113,44 @@ export default class App extends Component {
       }
     } else {
       //submit
+      let total_cost = 0;
+      let productsArr = [];
+      for (i = 0; i < this.state.products.length; i++) {
+        let products = this.state.products;
+        let productTotalPrice =
+          products[i].productQuantity * products[i].productPrice;
+        total_cost += productTotalPrice;
+
+        //arranging products
+        productsArr[i] = [
+          products[i].productName,
+          products[i].productQuantity,
+          products[i].productPrice
+        ];
+      }
+
+      let customer = {
+        name: this.state.customer_name,
+        email: this.state.customer_email,
+        phone_num: this.state.customer_phone_num,
+        total_cost
+      };
+
+      let bodyJson = {
+        customer,
+        products: productsArr
+      };
+
+      fetch("https://agile-cove-17825.herokuapp.com/api/customer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(bodyJson)
+      })
+        .then(res => res.json())
+        .then(res => console.log(res.data.link))
+        .catch(err => console.log("err" + err));
     }
   };
   render() {
@@ -130,26 +169,26 @@ export default class App extends Component {
           </Text>
           <AnimatedField
             placeholder="Name"
-            placeholderC={this.state.namePlaceC}
             text="Name"
             keyboardType="default"
             onChangeText={customer_name => this.setState({ customer_name })}
+            value={this.state.customer_name}
           />
           <AnimatedField
             placeholder="Email"
-            placeholderC="grey"
             text="Email(optional)"
             keyboardType="email-address"
             onChangeText={customer_email => this.setState({ customer_email })}
+            value={this.state.customer_email}
           />
           <AnimatedField
             placeholder="Phone Number"
-            placeholderC={this.state.phonePlaceC}
             text="Phone Number"
             keyboardType="phone-pad"
             onChangeText={customer_phone_num =>
               this.setState({ customer_phone_num })
             }
+            value={this.state.customer_phone_num}
           />
         </View>
         <View
@@ -225,7 +264,7 @@ export default class App extends Component {
               );
             }}
             renderItem={({ item }) => this.productRenderItem(item)}
-            keyExtractor={item => item.productId}
+            keyExtractor={(item, index) => (index + item.productId).toString()}
           />
         </View>
 
@@ -233,7 +272,7 @@ export default class App extends Component {
           style={styles.submitBtn}
           onPress={() => this.submit()}
         >
-          <Text style={{ color: "white" }}>?</Text>
+          <Icon name="check" size={20} color="#fff" />
         </TouchableOpacity>
       </ScrollView>
     );

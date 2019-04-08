@@ -14,12 +14,22 @@ export default class AnimatedField extends Component {
     this.animation = new Animated.Value(0);
   }
 
+  // Called when textInput editing begins
   animateOnFocus = () => {
     Animated.spring(this.animation, {
       toValue: 1,
       tension: 40
     }).start();
     this.setState({ placeholderT: "" });
+  };
+
+  // Called when TextInput Editing ends
+  animateOnEndEditing = () => {
+    Animated.spring(this.animation, {
+      toValue: 0,
+      tension: 40
+    }).start();
+    this.setState({ placeholderT: this.props.placeholder });
   };
 
   render() {
@@ -55,9 +65,11 @@ export default class AnimatedField extends Component {
             style={styles.Text_Input}
             onChangeText={this.props.onChangeText}
             placeholder={this.state.placeholderT}
-            placeholderTextColor={this.props.placeholderC}
+            placeholderTextColor="grey"
             onFocus={this.animateOnFocus}
+            onEndEditing={this.animateOnEndEditing}
             keyboardType={this.props.keyboardType}
+            value={this.props.value}
           />
         </Animated.View>
       </View>
@@ -76,7 +88,7 @@ const styles = StyleSheet.create({
   Text_Input: {
     height: 40,
     width: "100%",
-    borderColor: "black",
+    borderColor: "grey",
     borderRadius: 10,
     borderWidth: 0.4,
     padding: 8,
